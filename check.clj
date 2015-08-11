@@ -21,12 +21,26 @@
     "openjml.prover.z3_4_3=" (string/replace path "\\" "\\\\") "\n" ;; needed to support windows
     )))
 
+(defn get-classpath-sep []
+  (if (.equals (util/get-my-platform) "windows")
+    ";"
+    ":"))
+
+(defn configure-classpath []
+  (let [cp (*check-configuration* :classpath)]
+    (if (= nil cp)
+      "."
+      (string/join (get-classpath-sep) (util/expand-glob cp)))))
+
 (defcheck default
   ;; create a solver configuration
   (log/info  "Configuring solver for Z3...")
   (configure-solver (resolve-path "z3" "z3-4.3.0-x86/bin/z3.exe"))
 
   ;; run the check
-  (log/info  "Running OpenJML in ESC Mode...")  
-  (run "java" "-jar" "${openjml:openjml.jar}" "-esc" *project-files* ))
+  (log/info  "Running OpenJML in ESC Mode...")
+
+  ;; see if they want to modify the classpath
+  
+  (run "java"  "-jar" "${openjml:openjml.jar}" "-classpath" (str "\"" (configure-classpath) "\"")  "-esc" *project-files* ))
 
