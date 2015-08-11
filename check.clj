@@ -28,5 +28,5 @@
 
   ;; run the check
   (log/info  "Running OpenJML in ESC Mode...")  
-  (run "java" "-jar" "${openjml:openjml.jar}" "-esc" *project-files-string* ))
+  (run "java" "-jar" "${openjml:openjml.jar}" "-esc" *project-files* ))
 
