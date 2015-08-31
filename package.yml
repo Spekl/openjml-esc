@@ -1,5 +1,5 @@
 name       : openjml-esc          # name of the package
-version    : 1.7.3.20150406-4     # version of the package
+version    : 1.7.3.20150406-5     # version of the package
 kind       : tool                 # one of tool or spec(s)
 description: The Extended Static Checker for OpenJML.
 
@@ -10,7 +10,7 @@ author:
 
 assumes:
   - cmd: uname -a
-    matches: .*
+    matches: NOT_SUPPORTED
     message: "Sorry, but OSX is not currently supported for this tool."
     platform: osx
     
