@@ -26,11 +26,31 @@
     ";"
     ":"))
 
-(defn configure-classpath []
+(defn configure-classpath [extra]
   (let [cp (*check-configuration* :classpath)]
     (if (= nil cp)
-      "."
-      (string/join (get-classpath-sep) (util/expand-glob cp)))))
+      (str  "."  (get-classpath-sep) extra)
+      (string/join (get-classpath-sep) (cons extra (util/expand-glob cp))))))
+
+
+(defn configure-specspath []
+  (string/join (get-classpath-sep) (doall (map (fn [x] (.getPath (x :dir))) *specs*))))
+
+(defn get-classpath [extra]
+  (if (= nil (*check-configuration* :out))
+    (list  "-classpath" (str "\"" (configure-classpath extra)  "\""))
+    (list  "-classpath" (str "\"" (configure-classpath extra) (get-classpath-sep) (*check-configuration* :out) "\""))))
+
+(defn has-specs []
+  (> (count *specs*) 0))
+
+(defn get-specspath []
+  (if (has-specs)
+    (list  "-specspath" (str "\"" (configure-specspath) "\""))))
+
+(defn get-extra-args []
+  (filter (fn [x] (not (= nil x))) (flatten (list (get-classpath ".") (get-specspath)))))
+
 
 (defcheck default
   ;; create a solver configuration
@@ -42,5 +62,5 @@
 
   ;; see if they want to modify the classpath
   
-  (run "java"  "-jar" "${openjml:openjml.jar}" "-classpath" (str "\"" (configure-classpath) "\"")  "-esc" *project-files* ))
+  (run "java"  "-jar" "${openjml:openjml.jar}" (get-extra-args)  "-esc" *project-files* ))
 
