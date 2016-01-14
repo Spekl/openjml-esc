@@ -1,18 +1,11 @@
 name       : openjml-esc          # name of the package
-version    : 1.7.3.20150406-6     # version of the package
+version    : 1.7.3.20150406-7     # version of the package
 kind       : tool                 # one of tool or spec(s)
 description: The Extended Static Checker for OpenJML.
 
 author:
   - name: John L. Singleton 
     email: jsinglet@gmail.com
-
-
-assumes:
-  - cmd: uname -a
-    matches: NOT_SUPPORTED
-    message: "Sorry, but OSX is not currently supported for this tool."
-    platform: osx
     
 
 depends:                               

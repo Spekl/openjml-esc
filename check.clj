@@ -36,17 +36,26 @@
 (defn configure-specspath []
   (string/join (get-classpath-sep) (doall (map (fn [x] (.getPath (x :dir))) *specs*))))
 
-(defn get-classpath [extra]
-  (if (= nil (*check-configuration* :out))
-    (list  "-classpath" (str "\"" (configure-classpath extra)  "\""))
-    (list  "-classpath" (str "\"" (configure-classpath extra) (get-classpath-sep) (*check-configuration* :out) "\""))))
+(defn get-cp-quote []
+  (if (.equals (util/get-my-platform) "windows")
+    "\""
+    "")
+  )
 
 (defn has-specs []
   (> (count *specs*) 0))
 
+
+(defn get-classpath [extra]
+  (if (= nil (*check-configuration* :out))
+    (list  "-classpath" (str (get-cp-quote) (configure-classpath extra)  (get-cp-quote)))
+    (list  "-classpath" (str (get-cp-quote) (configure-classpath extra) (get-classpath-sep) (*check-configuration* :out) (get-cp-quote)))))
+
 (defn get-specspath []
   (if (has-specs)
-    (list  "-specspath" (str "\"" (configure-specspath) "\""))))
+    (list  "-specspath" (str (get-cp-quote) (configure-specspath) (get-cp-quote)))))
+
+
 
 (defn get-extra-args []
   (filter (fn [x] (not (= nil x))) (flatten (list (get-classpath ".") (get-specspath)))))
