@@ -60,6 +60,13 @@
 (defn get-extra-args []
   (filter (fn [x] (not (= nil x))) (flatten (list (get-classpath ".") (get-specspath)))))
 
+(defn get-custom-args[]
+  (if (not (= nil (*check-configuration* :extra-args)))
+    (*check-configuration* :extra-args)
+    '()
+    )
+
+  )
 
 (defcheck default
   ;; create a solver configuration
@@ -68,8 +75,7 @@
 
   ;; run the check
   (log/info  "Running OpenJML in ESC Mode...")
-
   ;; see if they want to modify the classpath
   
-  (run "java"  "-jar" "${openjml:openjml.jar}" (get-extra-args)  "-esc" *project-files* ))
+  (run "java"  "-jar" "${openjml:openjml.jar}" (get-extra-args) (get-custom-args) "-esc" *project-files* ))
 
